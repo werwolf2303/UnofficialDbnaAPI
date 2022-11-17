@@ -23,11 +23,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WebReq {
-    CookieStore cookieStore = null;
+    public CookieStore cookieStore = null;
     HttpContext httpContext = null;
     boolean loggedIn = false;
-    String user = "";
-    String pass = "";
+    public String user = "";
+    public String pass = "";
+    public boolean ping(String url) {
+        try {
+            HttpGet request = new HttpGet(url.replace("wss", "https"));
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpResponse response1 = httpClient.execute(request, httpContext);
+            return true;
+        } catch (ClientProtocolException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            return false;
+        }
+    }
     public void login(String username, String password) {
         user = username;
         pass = password;

@@ -10,4 +10,12 @@ public class Person {
     public String picture = "";
     public String username = "";
     public boolean group = false;
+
+    public String area = "";
+
+    public String signUpDate = "";
+
+    public int friendsCount = 0;
+
+    public int crush = 0;
 }

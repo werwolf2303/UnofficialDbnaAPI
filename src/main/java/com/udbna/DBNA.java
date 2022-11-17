@@ -2,11 +2,39 @@ package com.udbna;
 
 import com.udbna.objects.*;
 import com.udbna.tools.WebReq;
+import com.udbna.tools.WebSocket;
+import org.apache.commons.logging.impl.Log4JLogger;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.*;
+import org.springframework.util.concurrent.FailureCallback;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
+import org.springframework.util.concurrent.SuccessCallback;
+import org.springframework.web.socket.*;
+import org.springframework.web.socket.client.WebSocketClient;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
+import org.springframework.web.socket.sockjs.client.SockJsClient;
+import org.springframework.web.socket.sockjs.client.Transport;
+import org.springframework.web.socket.sockjs.client.TransportRequest;
+import org.springframework.web.socket.sockjs.transport.TransportType;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 
 public class DBNA {
     WebReq req = new WebReq();
@@ -161,10 +189,10 @@ public class DBNA {
             }
             stories.add(story);
         }
+        try {
         JSONObject pin = new JSONObject(object.get("pinned").toString());
         Pinned p = board.pinned;
         ArrayList<Comment> comments = p.comments;
-        try {
             for (Object c : new JSONObject(pin.get("comments").toString()).getJSONArray("stories")) {
                 JSONObject com = new JSONObject(c.toString());
                 Comment comment = new Comment();
@@ -203,9 +231,6 @@ public class DBNA {
                 }
                 comments.add(comment);
             }
-        }catch (JSONException ex) {
-            //No comments
-        }
         p.content = pin.getString("body");
         p.date = pin.getString("date");
         p.heartCount = new JSONObject(pin.get("hearts").toString()).getInt("count");
@@ -239,6 +264,23 @@ public class DBNA {
             person.username = pe.getString("username");
         }catch (JSONException ex) {
         }
+        }catch (JSONException ex) {
+            //No comments
+        }
         return board;
     }
+    public Person getPersonWithId(String id) {
+        return null;
+    }
+    //Unfinished
+    public Messages getMessages() {
+        //wss://www.dbna.com/chat-server/socket.io/?EIO=3&transport=websocket
+        String connectionURL = "wss://www.dbna.com/chat-server/socket.io/?EIO=3&transport=websocket";
+        WebSocket socket = new WebSocket(connectionURL, req.user, req.pass);
+        Messages message = new Messages();
+        String socketResponse = socket.sendCode("422[\"peers\",{}]").content;
+        System.out.println(socketResponse);
+        return message;
+    }
+
 }

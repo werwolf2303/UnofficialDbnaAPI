@@ -1,0 +1,61 @@
+
+
+Reverse Engineering WebSocket for Messages from DBNA
+
+Connection steps:
+  1. Send Cookie 'cdsess:%ID%'
+  2. Send 0 to get Ping Interval and Timeout Interval
+  3. Send Codes (If you want to keeep alive send Code 2 in TimeInterval)
+  4. Disonnect
+
+
+
+Get Messages for User with ID
+
+##############################################################
+42166["history",{"peer":"'userid'","limit":30,"thumb":false}]
+
+42166 = Code
+history = Nachrichten Verlauf
+peer = User ID
+limit = Max 30 Nachrichten
+thumb = ??
+##############################################################
+
+Get if User(myself) has unread messages
+
+##############################################################
+420["unread",{}]
+
+420 = Code
+unread = Unread Messages
+{} = List of Unread Messages
+##############################################################
+
+Send Message
+
+##############################################################
+4222["message",{"receiver":"'tosenduserid'","message":"'message'"}]
+
+4222 = Code
+receiver = User ID to receive
+message = Message tosend
+
+##############################################################
+
+
+Codes:
+   0 = Get Ping Interval and Timeout with Session ID
+   2 = Ping
+   3 = Pong
+   44 = Authentication Failure
+   420 = Get unread messages if it has get list
+   422 = Get all Contacts
+   4222 = Send Message to user ID
+   42166 = Get history for user with ID
+
+
+
+
+
+
